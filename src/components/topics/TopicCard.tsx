@@ -52,14 +52,14 @@ export function TopicCard({ topic, isOwner, onSelect, onEdit, onDelete, onInvite
 
       <div className="flex flex-col gap-3 p-4 relative z-10">
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2  max-w-full">
             <div className="p-1.5 rounded-md" style={{ background: `${accentColor}22` }}>
               {isPrivate
                 ? <Lock size={15} style={{ color: accentColor }} />
                 : <BookOpen size={15} style={{ color: accentColor }} />
               }
             </div>
-            <p className="font-semibold text-sm line-clamp-1">{topic.title}</p>
+            <p className="font-semibold text-sm line-clamp-1 truncate">{topic.title}</p>
           </div>
 
           {isOwner && (
@@ -116,7 +116,7 @@ export function TopicCard({ topic, isOwner, onSelect, onEdit, onDelete, onInvite
         </div>
 
         {topic.description && (
-          <p className="text-xs text-default-400 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-default-400 line-clamp-1 leading-relaxed truncate max-w-full">
             {topic.description}
           </p>
         )}

@@ -17,6 +17,7 @@ import { DeleteNoteModal } from '@/components/notes/DeleteNoteModal';
 import type { TopicDetail, Note, TopicMember } from '@/types/topicTypes';
 import { MembersSection } from '@/components/topics/MembersSection';
 import { InviteMemberModal } from '@/components/topics/InviteMemberModal';
+import { ViewNoteModal } from '@/components/notes/ViewNoteModal';
 
 export function TopicDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -35,6 +36,8 @@ export function TopicDetailPage() {
 
     const [members, setMembers] = useState<TopicMember[]>([]);
     const [isInviteOpen, setIsInviteOpen] = useState(false);
+
+    const [viewNote, setViewNote] = useState<Note | null>(null);
 
     useEffect(() => {
         if (id) load();
@@ -150,6 +153,7 @@ export function TopicDetailPage() {
                                 onUpdated={(updated) => setNotes((prev) => prev.map((n) => n.id === updated.id ? updated : n))}
                                 onEdit={setEditNote}
                                 onDelete={setDeleteNote}
+                                onView={setViewNote}
                             />
                         ))}
                     </div>
@@ -179,6 +183,13 @@ export function TopicDetailPage() {
                 topicId={id!}
                 onClose={() => setIsInviteOpen(false)}
                 onInvited={load}
+            />
+
+            <ViewNoteModal
+                note={viewNote}
+                onClose={() => setViewNote(null)}
+                onEdit={(note) => { setViewNote(null); setEditNote(note); }}
+                onDelete={(note) => { setViewNote(null); setDeleteNote(note); }}
             />
         </div>
     );
