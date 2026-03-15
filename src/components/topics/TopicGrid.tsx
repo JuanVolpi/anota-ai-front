@@ -12,6 +12,7 @@ import { EditTopicModal } from './EditTopicModal';
 import { DeleteTopicModal } from './DeleteTopicModal';
 import { InviteMemberModal } from './InviteMemberModal';
 import type { Topic } from '@/types/topicTypes';
+import { TopicCardSkeleton } from './TopicCardSkeleton';
 
 export function TopicGrid() {
   const { user } = useAuth();
@@ -55,7 +56,11 @@ export function TopicGrid() {
       />
 
       {isLoading ? (
-        <div className="flex flex-1 items-center justify-center"><Spinner size="lg" /></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <TopicCardSkeleton key={i} />
+          ))}
+        </div>
       ) : filtered.length === 0 ? (
         <TopicEmptyState showArchived={showArchived} search={search} selectedCategory={selectedCategory} />
       ) : (

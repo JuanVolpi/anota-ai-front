@@ -94,3 +94,11 @@ export interface PaginatedTopics {
   limit: number;
   total_pages: number;
 }
+
+export interface PaginatedNotes {
+  data: Note[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+}

@@ -1,13 +1,13 @@
 // src/services/noteService.ts
 import { api } from './api';
-import type { Note, CreateNotePayload, UpdateNotePayload } from '@/types/topicTypes';
+import type { Note, CreateNotePayload, UpdateNotePayload, PaginatedNotes } from '@/types/topicTypes';
 
 export const noteService = {
-    async getNotes(topicId: string, passphrase?: string): Promise<Note[]> {
-        const response = await api.get<Note[]>(`/topics/${topicId}/notes`, {
-            headers: passphrase ? { 'x-note-passphrase': passphrase } : {},
+    async getNotes(topicId: string, page = 1, limit = 20, q?: string): Promise<PaginatedNotes> {
+        const response = await api.get<PaginatedNotes>(`/topics/${topicId}/notes`, {
+            params: { page, limit, ...(q ? { q } : {}) },
         });
-        return response.data ?? [];
+        return response.data;
     },
 
     async createNote(topicId: string, payload: CreateNotePayload, passphrase?: string): Promise<Note> {
