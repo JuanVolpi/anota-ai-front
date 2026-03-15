@@ -14,12 +14,13 @@ import type { TopicMember } from '@/types/topicTypes';
 interface Props {
     topicId: string;
     ownerId: string;
+    ownerUsername: string;
     isOwner: boolean;
     members: TopicMember[];
     onMembersChanged: (members: TopicMember[]) => void;
 }
 
-export function MembersTab({ topicId, ownerId, isOwner, members, onMembersChanged }: Props) {
+export function MembersTab({ topicId, ownerId, ownerUsername, isOwner, members, onMembersChanged }: Props) {
     const [isInviteOpen, setIsInviteOpen] = useState(false);
     const [removingId, setRemovingId] = useState<string | null>(null);
     const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -50,11 +51,13 @@ export function MembersTab({ topicId, ownerId, isOwner, members, onMembersChange
         }
     }
 
+    const totalCount = members.length + 1; // +1 pelo dono
+
     return (
         <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-default-500">
-                    {members.length} membro{members.length !== 1 ? 's' : ''}
+                    {totalCount} membro{totalCount !== 1 ? 's' : ''}
                 </p>
                 {isOwner && (
                     <Button size="sm" variant="flat" color="primary" startContent={<UserPlus size={14} />} onPress={() => setIsInviteOpen(true)}>
@@ -63,75 +66,83 @@ export function MembersTab({ topicId, ownerId, isOwner, members, onMembersChange
                 )}
             </div>
 
-            {members.length === 0 ? (
-                <p className="text-sm text-default-400 py-2">Nenhum membro convidado ainda.</p>
-            ) : (
-                <div className="flex flex-col gap-2">
-                    {members.map((member) => {
-                        const isThisOwner = member.id === ownerId;
-                        return (
-                            <div
-                                key={member.id}
-                                className="flex items-center gap-3 p-3 rounded-xl border border-divider bg-default-50 dark:bg-default-100/5"
-                            >
-                                <Avatar
-                                    showFallback
-                                    name={member.username.charAt(0).toUpperCase()}
-                                    className="w-8 h-8 text-sm font-bold bg-primary/20 text-primary shrink-0"
-                                />
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                        <p className="text-sm font-semibold truncate">{member.username}</p>
-                                        {isThisOwner && (
-                                            <Chip size="sm" variant="flat" color="warning" startContent={<Crown size={10} />}>
-                                                dono
-                                            </Chip>
-                                        )}
-                                    </div>
-                                    <p className="text-xs text-default-400 font-mono">{member.public_id}</p>
-                                </div>
+            <div className="flex flex-col gap-2">
+                {/* Dono — sempre primeiro */}
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-warning/30 bg-warning/5">
+                    <Avatar
+                        showFallback
+                        name={ownerUsername.charAt(0).toUpperCase()}
+                        className="w-8 h-8 text-sm font-bold bg-warning/20 text-warning shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold truncate">{ownerUsername}</p>
+                            <Chip size="sm" variant="flat" color="warning" startContent={<Crown size={10} />}>
+                                dono
+                            </Chip>
+                        </div>
+                    </div>
+                </div>
 
-                                {!isThisOwner && isOwner && (
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        <Select
-                                            size="sm"
-                                            selectedKeys={[member.role ?? 'write']}
-                                            onSelectionChange={(keys) => handleRoleChange(member, [...keys][0] as 'read' | 'write')}
-                                            isDisabled={updatingId === member.id}
-                                            className="w-28"
-                                            aria-label="Permissão"
+                {/* Membros convidados */}
+                {members.length === 0 ? (
+                    <p className="text-sm text-default-400 py-2">Nenhum membro convidado ainda.</p>
+                ) : (
+                    members.map((member) => (
+                        <div
+                            key={member.id}
+                            className="flex items-center gap-3 p-3 rounded-xl border border-divider bg-default-50 dark:bg-default-100/5"
+                        >
+                            <Avatar
+                                showFallback
+                                name={member.username.charAt(0).toUpperCase()}
+                                className="w-8 h-8 text-sm font-bold bg-primary/20 text-primary shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold truncate">{member.username}</p>
+                                <p className="text-xs text-default-400 font-mono">{member.public_id}</p>
+                            </div>
+
+                            {isOwner ? (
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <Select
+                                        size="sm"
+                                        selectedKeys={[member.role ?? 'write']}
+                                        onSelectionChange={(keys) => handleRoleChange(member, [...keys][0] as 'read' | 'write')}
+                                        isDisabled={updatingId === member.id}
+                                        className="w-28"
+                                        aria-label="Permissão"
+                                    >
+                                        <SelectItem key="write">Escrita</SelectItem>
+                                        <SelectItem key="read">Leitura</SelectItem>
+                                    </Select>
+                                    <Tooltip content="Remover membro" color="danger">
+                                        <Button
+                                            isIconOnly size="sm" variant="flat" color="danger"
+                                            isLoading={removingId === member.id}
+                                            onPress={() => handleRemove(member)}
                                         >
-                                            <SelectItem key="write">Escrita</SelectItem>
-                                            <SelectItem key="read">Leitura</SelectItem>
-                                        </Select>
-                                        <Tooltip content="Remover membro" color="danger">
-                                            <Button
-                                                isIconOnly size="sm" variant="flat" color="danger"
-                                                isLoading={removingId === member.id}
-                                                onPress={() => handleRemove(member)}
-                                            >
-                                                <X size={13} />
-                                            </Button>
-                                        </Tooltip>
-                                    </div>
-                                )}
-
-                                {!isThisOwner && !isOwner && member.role && (
+                                            <X size={13} />
+                                        </Button>
+                                    </Tooltip>
+                                </div>
+                            ) : (
+                                member.role && (
                                     <Chip size="sm" variant="flat" color={member.role === 'write' ? 'success' : 'default'}>
                                         {member.role === 'write' ? 'Escrita' : 'Leitura'}
                                     </Chip>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
+                                )
+                            )}
+                        </div>
+                    ))
+                )}
+            </div>
 
             <InviteMemberModal
                 isOpen={isInviteOpen}
                 topicId={topicId}
                 onClose={() => setIsInviteOpen(false)}
-                onInvited={() => { setIsInviteOpen(false); }}
+                onInvited={() => setIsInviteOpen(false)}
             />
         </div>
     );

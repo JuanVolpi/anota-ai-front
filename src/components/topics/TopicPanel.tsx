@@ -5,18 +5,19 @@ import { Users, BarChart2, Activity } from 'lucide-react';
 import { MembersTab } from './MembersTab';
 import { StatsTab } from './StatsTab';
 import { ActivityTab } from './ActivityTab';
-import type { TopicMember, TopicStats, ActivityEvent } from '@/types/topicTypes';
+import type { TopicMember } from '@/types/topicTypes';
 
 interface Props {
     topicId: string;
     ownerId: string;
+    ownerUsername: string;
     isOwner: boolean;
     members: TopicMember[];
     onMembersChanged: (members: TopicMember[]) => void;
     refreshKey?: number;
 }
 
-export function TopicPanel({ topicId, ownerId, isOwner, members, onMembersChanged, refreshKey = 0 }: Props) {
+export function TopicPanel({ topicId, ownerId, ownerUsername, isOwner, members, onMembersChanged, refreshKey = 0 }: Props) {
     const [tab, setTab] = useState('members');
 
     return (
@@ -38,7 +39,8 @@ export function TopicPanel({ topicId, ownerId, isOwner, members, onMembersChange
                         <div className="flex items-center gap-1.5">
                             <Users size={14} />
                             <span>Membros</span>
-                            <span className="text-xs text-default-400">({members.length})</span>
+                            {/* +1 pelo dono */}
+                            <span className="text-xs text-default-400">({members.length + 1})</span>
                         </div>
                     }
                 >
@@ -46,6 +48,7 @@ export function TopicPanel({ topicId, ownerId, isOwner, members, onMembersChange
                         <MembersTab
                             topicId={topicId}
                             ownerId={ownerId}
+                            ownerUsername={ownerUsername}
                             isOwner={isOwner}
                             members={members}
                             onMembersChanged={onMembersChanged}
