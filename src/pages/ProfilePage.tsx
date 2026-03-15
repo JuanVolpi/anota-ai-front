@@ -12,6 +12,7 @@ import {
     EyeIcon, EyeOffIcon, Link,
 } from 'lucide-react';
 import { userService } from '@/services/userServices';
+import { SessionsCard } from '@/contexts/profile/SessionsCard';
 
 export function ProfilePage() {
     const { user } = useAuth();
@@ -190,6 +191,8 @@ export function ProfilePage() {
                         label="Nova senha"
                         type={showPassword ? 'text' : 'password'}
                         value={newPassword}
+                        minLength={8}
+                        maxLength={70}
                         onValueChange={setNewPassword}
                         endContent={
                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="focus:outline-none">
@@ -203,6 +206,8 @@ export function ProfilePage() {
                         placeholder="confirmar senha..."
                         type={showConfirm ? 'text' : 'password'}
                         value={confirmPassword}
+                        minLength={8}
+                        maxLength={70}
                         onValueChange={setConfirmPassword}
                         endContent={
                             <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="focus:outline-none">
@@ -222,6 +227,7 @@ export function ProfilePage() {
                     </Button>
                 </motion.div>
 
+                <SessionsCard />
 
                 {/* Alterar avatar URL */}
                 <motion.div
