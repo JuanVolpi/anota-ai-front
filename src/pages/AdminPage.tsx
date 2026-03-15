@@ -41,7 +41,6 @@ export function AdminPage() {
     const [foundUser, setFoundUser] = useState<User | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [notFound, setNotFound] = useState(false);
-
     async function handleCreateUser() {
         if (!newUsername.trim()) {
             addToast({ title: 'Username obrigatório', color: 'warning', timeout: 3000, shouldShowTimeoutProgress: true });
@@ -66,8 +65,29 @@ export function AdminPage() {
             setNewPassword('');
             setConfirmPassword('');
             addToast({ title: 'Usuário criado!', color: 'success', timeout: 3000, shouldShowTimeoutProgress: true });
-        } catch {
-            addToast({ title: 'Erro ao criar usuário', description: 'Username pode já estar em uso.', color: 'danger', timeout: 3000, shouldShowTimeoutProgress: true });
+        } catch (err: unknown) {
+            const status = (err as { response?: { status?: number } })?.response?.status;
+            const description = (err as { response?: { data?: { description?: string } } })
+                ?.response?.data?.description;
+
+            let msg = 'Tente novamente.';
+            if (description) {
+                msg = description;
+            } else if (status === 409) {
+                msg = 'Este username já está em uso.';
+            } else if (status === 400) {
+                msg = 'Username já existe ou senha inválida. Verifique os dados.';
+            } else if (status === 403) {
+                msg = 'Sem permissão para criar utilizadores.';
+            }
+
+            addToast({
+                title: 'Erro ao criar usuário',
+                description: msg,
+                color: 'danger',
+                timeout: 4000,
+                shouldShowTimeoutProgress: true,
+            });
         } finally {
             setIsCreating(false);
         }
