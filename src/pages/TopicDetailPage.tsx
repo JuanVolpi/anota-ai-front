@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@heroui/button';
-import { Spinner } from '@heroui/spinner';
 import { Chip } from '@heroui/chip';
 import { addToast } from '@heroui/toast';
 import { ArrowLeft, Plus, RefreshCw, Lock, Globe } from 'lucide-react';
