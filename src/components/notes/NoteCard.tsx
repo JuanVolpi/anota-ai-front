@@ -201,7 +201,7 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
 
                     {/* Descrição */}
                     {note.description && (
-                        <p className="text-xs text-default-400 leading-relaxed line-clamp-3 break-words">
+                        <p className="text-xs text-default-400 leading-relaxed line-clamp-3 wrap-break-words">
                             {stripMarkdown(note.description)}
                         </p>
                     )}
