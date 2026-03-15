@@ -22,15 +22,17 @@ export function RegisterCard() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1, duration: 0.4 }}
-        className="flex items-center gap-2 mb-8 justify-center cursor-pointer"
+        className="flex items-center gap-2 mb-2 justify-center cursor-pointer"
         onClick={() => navigate('/')}
       >
-        <Image
-          alt="HeroUI hero Image"
-          src="/Anotaai.png"
-          width={40}
-        />
-        <span className="font-bold text-white">Anota Ai</span>
+        <div className='flex flex-col justify-center items-center gap-1'>
+          <Image
+            alt="Anota ai logo"
+            src="/Anotaai.png"
+            width={50}
+          />
+          <span className="font-bold text-white">Anota Ai</span>
+        </div>
       </motion.div>
 
       <motion.div
