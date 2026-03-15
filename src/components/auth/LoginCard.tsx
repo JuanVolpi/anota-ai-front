@@ -27,7 +27,7 @@ export function LoginCard() {
       >
         <Image
           alt="HeroUI hero Image"
-          src="public/Anotaai.png"
+          src="/Anotaai.png"
           width={40}
         />
         <span className="font-bold text-white">Anota Ai</span>
