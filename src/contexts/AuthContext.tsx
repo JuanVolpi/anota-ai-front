@@ -2,9 +2,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { User } from '@/types/authTypes';
 import { authService } from '@/services/authServices';
-import { addToast } from '@heroui/toast';
-
-const TOKEN_KEY = '@SimpleNote:token';
 
 interface AuthContextData {
   user: User | null;
@@ -21,36 +18,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function validateToken() {
-      const token = localStorage.getItem(TOKEN_KEY);
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
+    async function validateSession() {
       try {
         const me = await authService.getMe();
         setUser(me);
       } catch {
-        localStorage.removeItem(TOKEN_KEY);
         setUser(null);
-        addToast({
-          title: 'Sessão expirada',
-          description: 'Faça login novamente.',
-          color: 'warning',
-          timeout: 4000,
-          shouldShowTimeoutProgress: true,
-        });
-        window.location.href = '/login';
       } finally {
         setIsLoading(false);
       }
     }
-    validateToken();
+    validateSession();
   }, []);
 
   async function login(username: string, password: string) {
-    const { access_token } = await authService.login({ username, password });
-    localStorage.setItem(TOKEN_KEY, access_token);
+    await authService.login({ username, password });
     const me = await authService.getMe();
     setUser(me);
   }
@@ -59,7 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await authService.logout();
     } finally {
-      localStorage.removeItem(TOKEN_KEY);
       setUser(null);
     }
   }

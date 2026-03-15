@@ -1,7 +1,5 @@
 // src/services/api.ts
-import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
-
-const TOKEN_KEY = '@SimpleNote:token';
+import axios, { type AxiosInstance, type AxiosResponse, AxiosError } from 'axios';
 
 export const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL as string,
@@ -9,30 +7,17 @@ export const api: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 10000,
+  withCredentials: true,
 });
 
-api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error: AxiosError): Promise<never> => {
-    return Promise.reject(error);
-  }
-);
-
 api.interceptors.response.use(
-  (response: AxiosResponse): AxiosResponse => {
-    return response;
-  },
+  (response: AxiosResponse): AxiosResponse => response,
   (error: AxiosError): Promise<never> => {
-    const isLoginRoute = error.config?.url === '/login';
+    const url = error.config?.url ?? '';
+    const isLoginRoute = url.includes('/login');
+    const isMeRoute = url.includes('/me');
 
-    if (error.response?.status === 401 && !isLoginRoute) {
-      localStorage.removeItem(TOKEN_KEY);
+    if (error.response?.status === 401 && !isLoginRoute && !isMeRoute) {
       window.location.href = '/login';
     }
     if (error.response?.status === 403) {
@@ -44,6 +29,7 @@ api.interceptors.response.use(
     if (!error.response) {
       console.error('[API] Sem resposta do servidor. Verifique sua conexão.');
     }
+
     return Promise.reject(error);
   }
 );
