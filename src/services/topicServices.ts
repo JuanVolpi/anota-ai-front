@@ -3,8 +3,10 @@ import { api } from './api';
 import type { Topic, TopicDetail, Note, CreateTopicPayload, CreateNotePayload, UpdateNotePayload, ActivityEvent, TopicStats, PaginatedTopics } from '@/types/topicTypes';
 
 export const topicService = {
-  async getAll(page = 1, limit = 16): Promise<PaginatedTopics> {
-    const response = await api.get<PaginatedTopics>('/topics/', { params: { page, limit } });
+  async getAll(page = 1, limit = 20, archived = false): Promise<PaginatedTopics> {
+    const response = await api.get<PaginatedTopics>('/topics/', {
+      params: { page, limit, ...(archived ? { archived: true } : {}) }
+    });
     return response.data;
   },
 

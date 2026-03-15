@@ -7,7 +7,7 @@ import { Select, SelectItem } from '@heroui/select';
 import { Spinner } from '@heroui/spinner';
 import { Chip } from '@heroui/chip';
 import { addToast } from '@heroui/toast';
-import { ArrowLeft, Plus, RefreshCw, Search, Lock, Globe } from 'lucide-react';
+import { ArrowLeft, Plus, RefreshCw, Search, Lock, Globe, FileText } from 'lucide-react';
 import { topicService } from '@/services/topicServices';
 import { useAuth } from '@/contexts/AuthContext';
 import { NoteCard } from '@/components/notes/NoteCard';
@@ -177,6 +177,11 @@ export function TopicDetailPage() {
                         <TopicPanel
                             topicId={id!}
                             ownerId={topic.owner_id}
+                            ownerUsername={
+                                isOwner
+                                    ? user!.username
+                                    : members.find((m) => m.id === topic.owner_id)?.username ?? 'Dono'
+                            }
                             isOwner={isOwner}
                             members={members}
                             onMembersChanged={(m) => { setMembers(m); triggerPanelRefresh(); }}
@@ -187,13 +192,13 @@ export function TopicDetailPage() {
             </div>
 
             {/* Filters */}
-            <div className="flex gap-3 px-4 md:px-6 py-3 shrink-0">
+            <div className="flex gap-3 justify-center px-4 md:px-6 py-3 shrink-0 ">
                 <Input
                     placeholder="Filtrar por nome..."
                     value={search}
                     onValueChange={setSearch}
                     startContent={<Search size={16} className="text-default-400" />}
-                    className="flex-1"
+                    className="flex-1 max-w-3/5"
                     size="sm"
                 />
                 <Select
@@ -211,8 +216,19 @@ export function TopicDetailPage() {
             {/* Notes grid */}
             <div className="flex-1 overflow-y-auto px-4 md:px-6 pb-6 pt-2 min-h-0">
                 {filtered.length === 0 ? (
-                    <div className="flex items-center justify-center h-48">
-                        <p className="text-default-400 text-sm">Nenhuma nota encontrada</p>
+                    <div className="flex flex-col items-center justify-center gap-3 h-full text-center">
+                        <div className="p-4 rounded-full bg-default-100">
+                            <FileText size={24} className="text-default-400" />
+                        </div>
+                        <div>
+                            <p className="font-semibold text-default-600">Nenhuma nota encontrada</p>
+                            <p className="text-sm text-warning">
+                                {search
+                                    ? `Nenhuma nota corresponde ao filtro "${search}"`
+                                    : 'Este tópico ainda não tem notas'
+                                }
+                            </p>
+                        </div>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
