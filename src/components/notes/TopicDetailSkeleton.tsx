@@ -1,6 +1,4 @@
 import { Skeleton } from "@heroui/skeleton";
-import { Card } from "@heroui/card";
-import { Divider } from "@heroui/divider";
 import { NoteCardSkeleton } from "@/components/notes/NoteCardSkeleton"; // Use o que criamos antes
 
 export function TopicDetailSkeleton() {

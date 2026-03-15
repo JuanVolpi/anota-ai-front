@@ -1,4 +1,3 @@
-import { Spinner } from '@heroui/spinner';
 import { Pagination } from '@heroui/pagination';
 import { FileText } from 'lucide-react';
 import { NoteCard } from './NoteCard';

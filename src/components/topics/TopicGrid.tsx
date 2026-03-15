@@ -1,6 +1,5 @@
 // src/components/topics/TopicGrid.tsx
 import { useState } from 'react';
-import { Spinner } from '@heroui/spinner';
 import { Pagination } from '@heroui/pagination';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';

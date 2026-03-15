@@ -14,6 +14,7 @@ import { Spinner } from '@heroui/spinner';
 import { addToast } from '@heroui/toast';
 import { noteService } from '@/services/noteServices';
 import { useAuth } from '@/contexts/AuthContext';
+import { Lock } from 'lucide-react';
 import type { Note } from '@/types/topicTypes';
 
 const ALLOWED_EMOJIS = ['👍', '❤️', '🔥', '💡', '😂', '😮'];
