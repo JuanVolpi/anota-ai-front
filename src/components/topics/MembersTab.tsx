@@ -20,7 +20,7 @@ interface Props {
     onMembersChanged: (members: TopicMember[]) => void;
 }
 
-export function MembersTab({ topicId, ownerId, ownerUsername, isOwner, members, onMembersChanged }: Props) {
+export function MembersTab({ topicId, ownerUsername, isOwner, members, onMembersChanged }: Props) {
     const [isInviteOpen, setIsInviteOpen] = useState(false);
     const [removingId, setRemovingId] = useState<string | null>(null);
     const [updatingId, setUpdatingId] = useState<string | null>(null);

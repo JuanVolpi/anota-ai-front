@@ -45,20 +45,22 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
     const downvotes = note.down_votes?.length ?? 0;
 
     function handleCopy() {
-        navigator.clipboard.writeText(note?.description ?? note?.title ?? '');
+        if (!note) return;
+        navigator.clipboard.writeText(note.description ?? note.title ?? '');
         addToast({ title: 'Copiado!', color: 'success', timeout: 2000, shouldShowTimeoutProgress: true });
     }
 
     function handleEdit() {
+        if (!note) return;
         onClose();
         onEdit(note);
     }
 
     function handleDelete() {
+        if (!note) return;
         onClose();
         onDelete(note);
     }
-
     return (
         <Modal
             isOpen={!!note}
@@ -77,7 +79,7 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
                             {/* Font size */}
                             <div className="flex items-center gap-0.5 border border-divider rounded-lg p-0.5">
                                 <ButtonGroup size="sm" variant="flat">
-                                    {FONT_SIZES.map((f, i) => (
+                                    {FONT_SIZES.map((_, i) => (
                                         <Button
                                             key={i}
                                             onPress={() => setFontIndex(i)}

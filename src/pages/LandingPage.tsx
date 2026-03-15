@@ -1,6 +1,6 @@
 // src/pages/Landing.tsx
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, type Variants } from 'framer-motion';
 import { Button } from '@heroui/button';
 import { Chip } from '@heroui/chip';
 import { Image } from '@heroui/image';
@@ -15,9 +15,13 @@ import {
 } from 'lucide-react';
 import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
 
-const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+const fadeUp: Variants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }, // cubic bezier em vez de string
+    },
 };
 
 const stagger = {
@@ -80,12 +84,6 @@ const features = [
     },
 ];
 
-const steps = [
-    { number: '01', title: 'Crie sua conta', description: 'Registro rápido com usuário e senha segura.' },
-    { number: '02', title: 'Crie um tópico', description: 'Organize suas notas em tópicos públicos ou privados.' },
-    { number: '03', title: 'Adicione notas', description: 'Escreva, edite e gerencie suas notas dentro de cada tópico.' },
-    { number: '04', title: 'Convide membros', description: 'Compartilhe tópicos privados com quem você escolher.' },
-];
 
 export function LandingPage() {
     return (
