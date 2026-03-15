@@ -96,7 +96,7 @@ export function LandingPage() {
                 <div className="flex items-center gap-2">
                     <Image
                         alt="HeroUI hero Image"
-                        src="public/Anotaai.png"
+                        src="/Anotaai.png"
                         width={40}
                     />
                     <span className="font-bold text-lg">Anota Ai</span>
