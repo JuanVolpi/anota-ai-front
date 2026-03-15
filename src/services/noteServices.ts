@@ -47,4 +47,24 @@ export const noteService = {
         const response = await api.delete<Note>(`/topics/notes/${noteId}/downvote`);
         return response.data;
     },
+
+    async addReaction(noteId: string, emoji: string): Promise<Note> {
+        const response = await api.post<Note>(`/topics/notes/${noteId}/reactions`, { emoji });
+        return response.data;
+    },
+
+    async removeReaction(noteId: string, emoji: string): Promise<Note> {
+        const response = await api.delete<Note>(`/topics/notes/${noteId}/reactions/${encodeURIComponent(emoji)}`);
+        return response.data;
+    },
+
+    async pinNote(noteId: string): Promise<Note> {
+        const response = await api.post<Note>(`/topics/notes/${noteId}/pin`);
+        return response.data;
+    },
+
+    async unpinNote(noteId: string): Promise<Note> {
+        const response = await api.delete<Note>(`/topics/notes/${noteId}/pin`);
+        return response.data;
+    },
 };

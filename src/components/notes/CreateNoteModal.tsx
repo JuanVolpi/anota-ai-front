@@ -1,9 +1,14 @@
+// src/components/notes/CreateNoteModal.tsx
 import { useState } from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
 import { Textarea } from '@heroui/input';
+import { Switch } from '@heroui/switch';
+import { DatePicker } from '@heroui/react';
 import { addToast } from '@heroui/toast';
+import { now, getLocalTimeZone, type ZonedDateTime } from '@internationalized/date';
+import { Clock } from 'lucide-react';
 import type { Note } from '@/types/topicTypes';
 import { noteService } from '@/services/noteServices';
 
@@ -17,11 +22,15 @@ interface Props {
 export function CreateNoteModal({ isOpen, topicId, onClose, onCreated }: Props) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [isTemporary, setIsTemporary] = useState(false);
+    const [expiresAt, setExpiresAt] = useState<ZonedDateTime | null>(null);
     const [isSaving, setIsSaving] = useState(false);
 
     function handleClose() {
         setTitle('');
         setDescription('');
+        setIsTemporary(false);
+        setExpiresAt(null);
         onClose();
     }
 
@@ -38,9 +47,17 @@ export function CreateNoteModal({ isOpen, topicId, onClose, onCreated }: Props) 
             addToast({ title: 'Descrição muito curta', description: 'Mínimo 4 caracteres.', color: 'warning', timeout: 3000, shouldShowTimeoutProgress: true });
             return;
         }
+        if (isTemporary && !expiresAt) {
+            addToast({ title: 'Selecione a data de expiração', color: 'warning', timeout: 3000, shouldShowTimeoutProgress: true });
+            return;
+        }
         try {
             setIsSaving(true);
-            const note = await noteService.createNote(topicId, { title, description: description || undefined });
+            const note = await noteService.createNote(topicId, {
+                title,
+                description: description || undefined,
+                expiresAt: isTemporary && expiresAt ? expiresAt.toAbsoluteString() : undefined,
+            });
             onCreated(note);
             handleClose();
             addToast({ title: 'Nota criada!', color: 'success', timeout: 3000, shouldShowTimeoutProgress: true });
@@ -78,6 +95,37 @@ export function CreateNoteModal({ isOpen, topicId, onClose, onCreated }: Props) 
                         isInvalid={description.length > 0 && description.trim().length < 4}
                         errorMessage="Mínimo 4 caracteres"
                     />
+
+                    {/* Toggle nota temporária */}
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-divider">
+                        <div className="flex items-center gap-2">
+                            <div className="p-1.5 rounded-md bg-warning/10">
+                                <Clock size={14} className="text-warning" />
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium">Nota temporária</p>
+                                <p className="text-xs text-default-400">A nota será apagada automaticamente</p>
+                            </div>
+                        </div>
+                        <Switch
+                            isSelected={isTemporary}
+                            onValueChange={(v) => { setIsTemporary(v); if (!v) setExpiresAt(null); }}
+                            color="warning"
+                            size="sm"
+                        />
+                    </div>
+
+                    {/* DatePicker só aparece se temporária */}
+                    {isTemporary && (
+                        <DatePicker
+                            label="Expira em"
+                            granularity="minute"
+                            minValue={now(getLocalTimeZone())}
+                            value={expiresAt}
+                            onChange={setExpiresAt}
+                            description="Selecione quando a nota deve expirar."
+                        />
+                    )}
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="flat" onPress={handleClose} isDisabled={isSaving}>Cancelar</Button>
