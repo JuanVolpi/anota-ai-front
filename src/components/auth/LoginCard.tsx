@@ -27,11 +27,11 @@ export function LoginCard() {
       >
         <div className='flex flex-col justify-center items-center gap-1'>
           <Image
-            alt="Anota ai logo"
+            alt="Anota aí logo"
             src="/Anotaai.png"
             width={50}
           />
-          <span className="font-bold text-white">Anota Ai</span>
+          <span className="font-bold text-white">Anota Aí</span>
         </div>
       </motion.div>
 

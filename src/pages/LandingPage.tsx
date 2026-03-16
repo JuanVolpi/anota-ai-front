@@ -97,7 +97,7 @@ export function LandingPage() {
                         src="/Anotaai.png"
                         width={40}
                     />
-                    <span className="font-bold text-lg">Anota Ai</span>
+                    <span className="font-bold text-lg">Anota Aí</span>
                 </div>
                 <div className="flex gap-3">
                     <Button as="a" href="/login" variant="flat" size="sm" className="text-white/70">
@@ -300,7 +300,7 @@ export function LandingPage() {
             <footer className="border-t border-white/5 py-8 px-6 text-center">
                 <div className="flex items-center justify-center gap-2 mb-2">
                     <StickyNote size={16} className="text-primary" />
-                    <span className="font-semibold">Anota Ai</span>
+                    <span className="font-semibold">Anota Aí</span>
                 </div>
                 <p className="text-white/30 text-sm">Feito com React, HeroUI e Framer Motion.</p>
             </footer>

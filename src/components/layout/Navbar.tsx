@@ -61,8 +61,8 @@ export function AppNavbar() {
 
         <NavbarBrand className="gap-3">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleNavigate('/')}>
-            <Image alt="Anota Ai" src="/Anotaai.png" width={32} />
-            <span className="text-base font-black tracking-tight">Anota Ai</span>
+            <Image alt="Anota Aí" src="/Anotaai.png" width={32} />
+            <span className="text-base font-black tracking-tight">Anota Aí</span>
           </div>
         </NavbarBrand>
       </NavbarContent>
