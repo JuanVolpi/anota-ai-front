@@ -1,7 +1,7 @@
 // src/components/notes/NoteCard.tsx
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ThumbsUp, ThumbsDown, Clock, MoreVertical, Pencil, Trash2, SmilePlus, Pin, PinOff } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Clock, MoreVertical, Pencil, Trash2, SmilePlus, Pin, PinOff, ArrowRightLeft } from 'lucide-react';
 import {
     Dropdown, DropdownTrigger, DropdownMenu,
     DropdownSection, DropdownItem,
@@ -27,6 +27,7 @@ interface NoteCardProps {
     onDelete: (note: Note) => void;
     onView: (note: Note) => void;
     onTogglePin: (note: Note) => void;
+    onMove: (note: Note) => void;
 }
 
 function timeAgo(date: string) {
@@ -51,7 +52,7 @@ function stripMarkdown(text: string): string {
         .trim();
 }
 
-export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePin, canWrite = true }: NoteCardProps) {
+export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePin, canWrite = true, onMove }: NoteCardProps) {
     const { user } = useAuth();
     const [isUpVoting, setIsUpVoting] = useState(false);
     const [isDownVoting, setIsDownVoting] = useState(false);
@@ -156,6 +157,7 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
                                 onAction={(key) => {
                                     if (key === 'edit') onEdit(note);
                                     if (key === 'pin') onTogglePin(note);
+                                    if (key === 'move') onMove(note);
                                     if (key === 'delete') onDelete(note);
                                 }}
                             >
@@ -175,6 +177,11 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
                                         >
                                             Editar nota
                                         </DropdownItem>
+                                        <DropdownItem
+                                            key="move"
+                                            startContent={<ArrowRightLeft size={14} />}
+                                            description="Enviar para outro tópico"
+                                        ></DropdownItem>
                                     </DropdownSection>
                                 ) : (
                                     <DropdownSection title="Informação">

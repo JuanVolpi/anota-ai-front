@@ -21,6 +21,7 @@ import { InviteMemberModal } from '@/components/topics/InviteMemberModal';
 import { ChangeVisibilityModal } from '@/components/topics/ChangeVisibilityModal';
 import type { TopicDetail, Note, TopicMember } from '@/types/topicTypes';
 import { TopicDetailSkeleton } from '@/components/notes/TopicDetailSkeleton';
+import { MoveNoteModal } from '@/components/notes/MoveNoteModal';
 
 export function TopicDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -39,6 +40,7 @@ export function TopicDetailPage() {
     const [viewNote, setViewNote] = useState<Note | null>(null);
     const [isInviteOpen, setIsInviteOpen] = useState(false);
     const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
+    const [moveNote, setMoveNote] = useState<Note | null>(null);
 
     const {
         notes, isLoading: isLoadingNotes, page, totalPages, total,
@@ -191,6 +193,7 @@ export function TopicDetailPage() {
                     onDelete={setDeleteNote}
                     onView={setViewNote}
                     onTogglePin={handleTogglePin}
+                    onMove={setMoveNote}
                 />
             </div>
 
@@ -227,6 +230,13 @@ export function TopicDetailPage() {
                 topic={isVisibilityOpen ? topic : null}
                 onClose={() => setIsVisibilityOpen(false)}
                 onUpdated={(updated) => { setTopic((prev) => prev ? { ...prev, ...updated } : null); setIsVisibilityOpen(false); }}
+            />
+
+            <MoveNoteModal
+                note={moveNote}
+                currentTopicId={id!}
+                onClose={() => setMoveNote(null)}
+                onMoved={(noteId) => { removeNote(noteId); triggerPanelRefresh(); }}
             />
         </div>
     );

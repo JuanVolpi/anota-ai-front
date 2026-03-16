@@ -67,4 +67,11 @@ export const noteService = {
         const response = await api.delete<Note>(`/topics/notes/${noteId}/pin`);
         return response.data;
     },
+
+    async moveNote(noteId: string, targetTopicId: string): Promise<Note> {
+        const response = await api.patch<Note>(`/topics/notes/${noteId}/topic`, {
+            target_topic_id: targetTopicId,
+        });
+        return response.data;
+    },
 };

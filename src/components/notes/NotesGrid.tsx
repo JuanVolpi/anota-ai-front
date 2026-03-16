@@ -17,12 +17,13 @@ interface Props {
     onDelete: (note: Note) => void;
     onView: (note: Note) => void;
     onTogglePin: (note: Note) => void;
+    onMove: (note: Note) => void;
 }
 
 export function NotesGrid({
     notes, isLoading, page, totalPages, search,
     canWrite, onPageChange,
-    onUpdated, onEdit, onDelete, onView, onTogglePin,
+    onUpdated, onEdit, onDelete, onView, onTogglePin, onMove
 }: Props) {
     if (isLoading) {
         return (
@@ -66,6 +67,7 @@ export function NotesGrid({
                         onDelete={onDelete}
                         onView={onView}
                         onTogglePin={onTogglePin}
+                        onMove={onMove}
                     />
                 ))}
             </div>
