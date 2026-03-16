@@ -13,6 +13,7 @@ import {
     Clock, RefreshCw,
 } from 'lucide-react';
 import type { Note } from '@/types/topicTypes';
+import remarkGfm from "remark-gfm";
 
 interface Props {
     note: Note | null;
@@ -181,7 +182,7 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
                             [&>pre]:bg-default-100 [&>pre]:rounded-xl [&>pre]:p-4
                             [&>hr]:border-divider
                         `}>
-                            <ReactMarkdown>{note.description}</ReactMarkdown>
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{note.description}</ReactMarkdown>
                         </div>
                     ) : (
                         <pre className={`
