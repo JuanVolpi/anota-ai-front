@@ -5,6 +5,7 @@ import { Button } from '@heroui/button';
 import { addToast } from '@heroui/toast';
 import { authService } from '@/services/authServices';
 import { EyeIcon, EyeOffIcon, UserPlus } from 'lucide-react';
+import { Alert } from '@heroui/react';
 
 export function RegisterForm() {
   const [username, setUsername] = useState('');
@@ -42,7 +43,14 @@ export function RegisterForm() {
 
   return (
     <div className="flex flex-col gap-4">
+      <Alert
+        color="warning"
+        title="Cadastro indisponível"
+        description="A criação de contas está temporariamente desativada. Entre em contato com um administrador para obter acesso."
+        className="mb-2"
+      />
       <Input
+        disabled={true}
         label="Usuário"
         placeholder="seu_usuario"
         value={username}
@@ -52,6 +60,7 @@ export function RegisterForm() {
       />
 
       <Input
+        disabled={true}
         label="Senha"
         placeholder="••••••••"
         type={showPassword ? 'text' : 'password'}
@@ -67,6 +76,7 @@ export function RegisterForm() {
       />
 
       <Input
+        disabled={true}
         label="Confirmar senha"
         placeholder="••••••••"
         type={showConfirm ? 'text' : 'password'}
