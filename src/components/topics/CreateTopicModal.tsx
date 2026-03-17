@@ -20,7 +20,7 @@ interface Props {
 export function CreateTopicModal({ isOpen, onClose, onCreated }: Props) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [isPrivate, setIsPrivate] = useState(false);
+    const [isPrivate, setIsPrivate] = useState(true);
     const [encryptionMode, setEncryptionMode] = useState<'server' | 'passphrase'>('server');
     const [passphrase, setPassphrase] = useState('');
     const [passphraseVisible, setPassphraseVisible] = useState(false);
@@ -138,6 +138,8 @@ export function CreateTopicModal({ isOpen, onClose, onCreated }: Props) {
                         )}
                     </div>
 
+
+
                     <Alert variant="bordered" title="Privacidade" icon={<HatGlasses strokeWidth="1px" size={20} />}
                         endContent={<Switch isSelected={isPrivate} onValueChange={setIsPrivate} />}>
                         <span className="text-xs text-default-400">
@@ -145,7 +147,7 @@ export function CreateTopicModal({ isOpen, onClose, onCreated }: Props) {
                         </span>
                     </Alert>
 
-                    {isPrivate && (
+                    {isPrivate ? (
                         <>
                             <div className="flex flex-col gap-2">
                                 <p className="text-sm font-medium">Criptografia</p>
@@ -178,7 +180,9 @@ export function CreateTopicModal({ isOpen, onClose, onCreated }: Props) {
                                 </>
                             )}
                         </>
-                    )}
+                    ) : (<Alert color="warning" variant="faded" title="Atenção: Tópico público">
+                        <span className="text-xs">Se público, todos os usuários vão conseguir ver este tópico.</span>
+                    </Alert>)}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onPress={handleCreate} isLoading={isLoading} fullWidth>Criar</Button>
