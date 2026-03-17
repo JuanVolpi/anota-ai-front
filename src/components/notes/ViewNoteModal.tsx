@@ -35,6 +35,20 @@ function timeAgo(date: string) {
     return `há ${days} dias`;
 }
 
+function timeRemaining(date: string) {
+    const diff = new Date(date).getTime() - Date.now();
+
+    if (diff <= 0) return 'expirada';
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (minutes < 60) return `expira em ${minutes}m`;
+    if (hours < 24) return `expira em ${hours}h`;
+    return `expira em ${days}d`;
+}
+
 export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
     const [fontIndex, setFontIndex] = useState(1);
     const [tab, setTab] = useState<'preview' | 'raw'>('preview');
@@ -44,6 +58,7 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
     const font = FONT_SIZES[fontIndex];
     const upvotes = note.up_votes?.length ?? 0;
     const downvotes = note.down_votes?.length ?? 0;
+    const isTemporary = !!note.expires_at;
 
     function handleCopy() {
         if (!note) return;
@@ -73,7 +88,20 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
                 {/* Header */}
                 <ModalHeader className="flex flex-col gap-3 pb-0">
                     <div className="flex items-start justify-between gap-4">
-                        <h2 className="text-xl font-black leading-tight flex-1">{note.title}</h2>
+                        <div className="flex items-center gap-2 flex-1">
+                            <h2 className="text-xl font-black leading-tight">{note.title}</h2>
+
+                            {isTemporary && (
+                                <Chip
+                                    size="sm"
+                                    variant="flat"
+                                    color="warning"
+                                    startContent={<Clock size={12} />}
+                                >
+                                    Temporária
+                                </Chip>
+                            )}
+                        </div>
 
                         {/* Actions */}
                         <div className="flex items-center gap-1 shrink-0">
@@ -121,6 +149,7 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
                             <Clock size={12} />
                             <span>Criada {timeAgo(note.created_at)}</span>
                         </div>
+
                         {note.updated_at !== note.created_at && (
                             <div className="flex items-center gap-1 text-xs text-default-400">
 
@@ -128,6 +157,12 @@ export function ViewNoteModal({ note, onClose, onEdit, onDelete }: Props) {
                                     <span>Atualizada {timeAgo(note.updated_at)}</span></> : <></>}
 
 
+                            </div>
+                        )}
+                        {note.expires_at && (
+                            <div className="flex items-center gap-1 text-xs text-warning">
+                                <Clock size={12} />
+                                <span>{timeRemaining(note.expires_at)}</span>
                             </div>
                         )}
                         <div className="flex items-center gap-2 ml-auto">

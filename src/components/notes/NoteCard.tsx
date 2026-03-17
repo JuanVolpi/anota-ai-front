@@ -16,6 +16,8 @@ import { noteService } from '@/services/noteServices';
 import { useAuth } from '@/contexts/AuthContext';
 import { Lock } from 'lucide-react';
 import type { Note } from '@/types/topicTypes';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from "remark-gfm";
 
 const ALLOWED_EMOJIS = ['👍', '❤️', '🔥', '💡', '😂', '😮'];
 
@@ -36,6 +38,20 @@ function timeAgo(date: string) {
     if (days === 0) return 'hoje';
     if (days === 1) return 'há 1 dia';
     return `há ${days} dias`;
+}
+
+function timeRemaining(date: string) {
+    const diff = new Date(date).getTime() - Date.now();
+
+    if (diff <= 0) return 'expirada';
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (minutes < 60) return `expira em ${minutes}m`;
+    if (hours < 24) return `expira em ${hours}h`;
+    return `expira em ${days}d`;
 }
 
 function stripMarkdown(text: string): string {
@@ -63,6 +79,7 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
     const hasDownvoted = (note.down_votes ?? []).some((v) => v.user_id === user?.user_id);
     const upvotes = note.up_votes?.length ?? 0;
     const downvotes = note.down_votes?.length ?? 0;
+    const isTemporary = !!note.expires_at;
     const activeReactions = ALLOWED_EMOJIS.filter((e) => getReactionCount(e) > 0);
 
     function getReactionCount(emoji: string) {
@@ -141,6 +158,12 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
                             {note.pinned && (
                                 <Pin size={11} className="text-warning shrink-0" />
                             )}
+                            {isTemporary && (
+                                <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-warning/10 text-warning border border-warning/30">
+                                    <Clock size={10} />
+                                    temporária
+                                </span>
+                            )}
                         </div>
 
                         <Dropdown>
@@ -210,7 +233,7 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
                     {/* Descrição */}
                     {note.description && (
                         <p className="text-xs text-default-400 leading-relaxed line-clamp-3 wrap-break-words">
-                            {stripMarkdown(note.description)}
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{note.description}</ReactMarkdown>
                         </p>
                     )}
                 </CardBody>
@@ -275,9 +298,14 @@ export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePi
                             </Button>
                         </div>
 
-                        <div className="flex items-center gap-1 text-xs text-default-400">
-                            <Clock size={11} />
+                        <div className="flex flex-col items-end text-xs">
                             <span>{timeAgo(note.created_at)}</span>
+
+                            {note.expires_at && (
+                                <span className="text-warning text-[10px]">
+                                    {timeRemaining(note.expires_at)}
+                                </span>
+                            )}
                         </div>
                     </div>
 
