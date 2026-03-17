@@ -129,7 +129,7 @@ export function AppNavbar() {
       </NavbarContent>
 
       {/* Mobile menu */}
-      <NavbarMenu className="pt-4 gap-2">
+      <NavbarMenu className="pt-4 gap-2 max-h-dvh overflow-y-auto">
         {/* User info */}
         <NavbarMenuItem>
           <div
@@ -172,7 +172,7 @@ export function AppNavbar() {
         })}
 
         {/* Logout */}
-        <NavbarMenuItem className="mt-auto pt-4 border-t border-divider">
+        <NavbarMenuItem className="mt-auto mb-4 border-t border-divider">
           <Button
             fullWidth variant="flat" color="danger"
             onPress={handleLogout}
