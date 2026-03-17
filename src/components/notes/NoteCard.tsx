@@ -54,20 +54,6 @@ function timeRemaining(date: string) {
     return `expira em ${days}d`;
 }
 
-function stripMarkdown(text: string): string {
-    return text
-        .replace(/!\[.*?\]\(.*?\)/g, '')
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-        .replace(/#{1,6}\s/g, '')
-        .replace(/(\*\*|__)(.*?)\1/g, '$2')
-        .replace(/(\*|_)(.*?)\1/g, '$2')
-        .replace(/`{1,3}[^`]*`{1,3}/g, '')
-        .replace(/>\s.*/g, '')
-        .replace(/[-*+]\s/g, '')
-        .replace(/\n+/g, ' ')
-        .trim();
-}
-
 export function NoteCard({ note, onUpdated, onEdit, onDelete, onView, onTogglePin, canWrite = true, onMove }: NoteCardProps) {
     const { user } = useAuth();
     const [isUpVoting, setIsUpVoting] = useState(false);
